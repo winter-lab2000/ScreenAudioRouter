@@ -1,0 +1,399 @@
+<Window x:Class="ScreenAudioRouter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Screen Audio Router"
+        Height="640" Width="980"
+        MinHeight="520" MinWidth="860"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F5F7"
+        FontFamily="Segoe UI Variable Text, Segoe UI, Microsoft YaHei UI"
+        UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display"
+        SnapsToDevicePixels="True"
+        Icon="Assets\ScreenAudioRouter.ico">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="52" ResizeBorderThickness="6"
+                      CornerRadius="12" GlassFrameThickness="0"
+                      UseAeroCaptionButtons="False"/>
+    </WindowChrome.WindowChrome>
+
+    <Border Background="#F5F5F7" CornerRadius="12" BorderBrush="#D2D2D7" BorderThickness="1" Margin="0">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="52"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Title bar -->
+            <Grid Grid.Row="0" Background="Transparent">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="16,0,0,0"
+                            Panel.ZIndex="1">
+                    <Button x:Name="TrafficClose" Width="12" Height="12" Margin="0,0,8,0"
+                            Background="#FF5F57" BorderThickness="0" Cursor="Hand"
+                            Click="OnCloseClick" ToolTip="关闭到托盘"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Grid>
+                                    <Ellipse x:Name="bg" Fill="#FF5F57" Width="12" Height="12"/>
+                                    <Path x:Name="glyph" Data="M2.5,2.5 L9.5,9.5 M9.5,2.5 L2.5,9.5"
+                                          Stroke="#7A0000" StrokeThickness="1.2" StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round" Opacity="0"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="glyph" Property="Opacity" Value="1"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="bg" Property="Fill" Value="#E0443E"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button x:Name="TrafficMin" Width="12" Height="12" Margin="0,0,8,0"
+                            Background="#FEBC2E" BorderThickness="0" Cursor="Hand"
+                            Click="OnMinimizeClick" ToolTip="最小化"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Grid>
+                                    <Ellipse x:Name="bg" Fill="#FEBC2E" Width="12" Height="12"/>
+                                    <Path x:Name="glyph" Data="M2.5,6 L9.5,6"
+                                          Stroke="#7A5B00" StrokeThickness="1.2" StrokeStartLineCap="Round"
+                                          StrokeEndLineCap="Round" Opacity="0"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="glyph" Property="Opacity" Value="1"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="bg" Property="Fill" Value="#DFA123"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                    <Button x:Name="TrafficZoom" Width="12" Height="12"
+                            Background="#28C840" BorderThickness="0" Cursor="Hand"
+                            Click="OnMaximizeClick" ToolTip="最大化 / 还原"
+                            WindowChrome.IsHitTestVisibleInChrome="True">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Grid>
+                                    <Ellipse x:Name="bg" Fill="#D2D2D7" Width="12" Height="12"/>
+                                    <Path x:Name="glyph" Data="M3.5,4 L8.5,4 L8.5,8.5 L3.5,8.5 Z"
+                                          Stroke="#5A5A5E" StrokeThickness="1" Fill="Transparent"
+                                          Opacity="0"/>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="glyph" Property="Opacity" Value="1"/>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="bg" Property="Fill" Value="#B8B8BD"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+                <TextBlock x:Name="PageTitle" Text="路由"
+                           FontSize="13" FontWeight="SemiBold" Foreground="#1D1D1F"
+                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,14,0"
+                            Panel.ZIndex="1">
+                    <TextBlock x:Name="HeaderText" Text="就绪" FontSize="12" Foreground="#6E6E73"
+                               VerticalAlignment="Center" Margin="0,0,12,0"/>
+                    <ToggleButton x:Name="MasterToggle" Checked="OnMasterToggle" Unchecked="OnMasterToggle"
+                                  Width="46" Height="26" Cursor="Hand"
+                                  WindowChrome.IsHitTestVisibleInChrome="True">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Border x:Name="track" Width="46" Height="26" CornerRadius="13"
+                                        Background="#E9E9EB">
+                                    <Ellipse x:Name="thumb" Width="22" Height="22" Fill="White"
+                                             HorizontalAlignment="Left" Margin="2,0,0,0"
+                                             VerticalAlignment="Center" RenderTransformOrigin="0.5,0.5">
+                                        <Ellipse.Effect>
+                                            <DropShadowEffect BlurRadius="4" ShadowDepth="1" Opacity="0.25"/>
+                                        </Ellipse.Effect>
+                                    </Ellipse>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter TargetName="track" Property="Background" Value="#34C759"/>
+                                        <Setter TargetName="thumb" Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter TargetName="thumb" Property="Margin" Value="0,0,2,0"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+                </StackPanel>
+            </Grid>
+
+            <!-- Body -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Sidebar -->
+                <Border Grid.Column="0" Background="#ECECEE" BorderBrush="#D8D8DC" BorderThickness="0,0,1,0">
+                    <DockPanel LastChildFill="True" Margin="10,12">
+                        <StackPanel DockPanel.Dock="Bottom" Margin="4,0,4,10">
+                            <TextBlock x:Name="StatusText" Text="就绪" FontSize="12" Foreground="#6E6E73"
+                                       TextWrapping="Wrap" Margin="8,0,0,8"/>
+                            <TextBlock x:Name="FocusText" Text="前台：—" FontSize="11" Foreground="#8E8E93"
+                                       Margin="8,0,8,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <!-- Nav -->
+                                <TextBlock Text="导航" FontSize="11" FontWeight="SemiBold" Foreground="#8E8E93"
+                                           Margin="8,0,8,6" IsHitTestVisible="False"/>
+                                <Button x:Name="NavRouting" Click="OnNavRouting"
+                                        HorizontalContentAlignment="Left" Margin="0,0,0,2"
+                                        Cursor="Hand" Background="Transparent" BorderThickness="0">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="bd" CornerRadius="8" Padding="10,9" Background="Transparent">
+                                                <ContentPresenter/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="#E1E1E4"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <TextBlock Text="路由映射" FontSize="13" FontWeight="SemiBold" Foreground="#1D1D1F"/>
+                                </Button>
+                                <Button x:Name="NavSettings" Click="OnNavSettings"
+                                        HorizontalContentAlignment="Left" Margin="0,0,0,8"
+                                        Cursor="Hand" Background="Transparent" BorderThickness="0">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border x:Name="bd" CornerRadius="8" Padding="10,9" Background="Transparent">
+                                                <ContentPresenter/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="bd" Property="Background" Value="#E1E1E4"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <TextBlock Text="设置" FontSize="13" FontWeight="SemiBold" Foreground="#1D1D1F"/>
+                                </Button>
+
+                                <Border Height="1" Background="#D8D8DC" Margin="4,4,4,12"/>
+
+                                <!-- Monitor list (routing context) -->
+                                <TextBlock Text="显示器" FontSize="11" FontWeight="SemiBold" Foreground="#8E8E93"
+                                           Margin="8,0,8,8" IsHitTestVisible="False"/>
+                                <ItemsControl x:Name="MonitorList">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Button Click="OnMonitorSelected"
+                                                    HorizontalContentAlignment="Left" Margin="0,0,0,4"
+                                                    Background="Transparent" BorderThickness="0"
+                                                    Cursor="Hand">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="bd" CornerRadius="8" Padding="10,10"
+                                                                Background="Transparent">
+                                                            <ContentPresenter/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="bd" Property="Background" Value="#E1E1E4"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Border Width="10" Height="10" CornerRadius="5" Margin="0,0,8,0"
+                                                                VerticalAlignment="Center">
+                                                            <Border.Style>
+                                                                <Style TargetType="Border">
+                                                                    <Setter Property="Background" Value="#D2D2D7"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsPrimary}" Value="True">
+                                                                            <Setter Property="Background" Value="#0071E3"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+                                                        </Border>
+                                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="13"
+                                                                   Foreground="#1D1D1F"/>
+                                                    </StackPanel>
+                                                    <TextBlock Text="{Binding ResolutionText}" FontSize="11" Foreground="#8E8E93"
+                                                               Margin="18,2,0,0"/>
+                                                    <TextBlock Text="{Binding OutputLabel}" FontSize="11" Foreground="#0071E3"
+                                                               Margin="18,4,0,0" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding InputLabel}" FontSize="11" Foreground="#6E6E73"
+                                                               Margin="18,1,0,0" TextTrimming="CharacterEllipsis"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
+
+                <!-- Content host -->
+                <Grid Grid.Column="1">
+                    <!-- Page: Routing -->
+                    <ScrollViewer x:Name="PageRouting" VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="28,20,28,24">
+                            <StackPanel>
+                                <TextBlock Text="按显示器路由" FontSize="22" FontWeight="SemiBold" Foreground="#1D1D1F"/>
+                                <TextBlock Text="窗口落在哪个屏幕，就把默认扬声器和麦克风切到该屏幕绑定的设备。"
+                                           FontSize="13" Foreground="#6E6E73" Margin="0,6,0,18" TextWrapping="Wrap"/>
+
+                                <Border x:Name="TopologyHost" CornerRadius="16" Background="#FFFFFF"
+                                        BorderBrush="#E5E5EA" BorderThickness="1" MinHeight="180" Padding="16"
+                                        Margin="0,0,0,20">
+                                    <Grid x:Name="TopologyCanvas" MinHeight="160"/>
+                                </Border>
+
+                                <Border CornerRadius="16" Background="#FFFFFF" BorderBrush="#E5E5EA" BorderThickness="1"
+                                        Padding="20" Margin="0,0,0,16">
+                                    <StackPanel>
+                                        <DockPanel>
+                                            <TextBlock x:Name="CardTitle" Text="显示器映射" FontSize="16" FontWeight="SemiBold"
+                                                       Foreground="#1D1D1F" VerticalAlignment="Center"/>
+                                            <Button DockPanel.Dock="Right" Content="立即切换" Style="{StaticResource SecondaryButton}"
+                                                    Click="OnForceRoute"/>
+                                        </DockPanel>
+
+                                        <TextBlock Text="输出（扬声器 / 耳机）" FontSize="12" FontWeight="SemiBold"
+                                                   Foreground="#8E8E93" Margin="0,18,0,8"/>
+                                        <ComboBox x:Name="OutputCombo" Height="36" FontSize="13"
+                                                  DisplayMemberPath="DisplayName" SelectionChanged="OnMappingChanged"/>
+
+                                        <TextBlock Text="输入（麦克风）" FontSize="12" FontWeight="SemiBold"
+                                                   Foreground="#8E8E93" Margin="0,16,0,8"/>
+                                        <ComboBox x:Name="InputCombo" Height="36" FontSize="13"
+                                                  DisplayMemberPath="DisplayName" SelectionChanged="OnMappingChanged"/>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
+                                            <Button Content="保存映射" Style="{StaticResource PrimaryButton}" Click="OnSave"/>
+                                            <Button Content="刷新设备" Style="{StaticResource SecondaryButton}"
+                                                    Click="OnRefresh" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border CornerRadius="16" Background="#1D1D1F" Padding="14,12" MinHeight="100">
+                                    <DockPanel>
+                                        <TextBlock DockPanel.Dock="Top" Text="最近活动" FontSize="12" FontWeight="SemiBold"
+                                                   Foreground="#8E8E93" Margin="0,0,0,8"/>
+                                        <TextBox x:Name="LogBox" IsReadOnly="True" Background="Transparent" BorderThickness="0"
+                                                 Foreground="#E8E8ED" FontFamily="Cascadia Code, Consolas, Courier New"
+                                                 FontSize="11" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"
+                                                 MaxHeight="100"/>
+                                    </DockPanel>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <!-- Page: Settings -->
+                    <ScrollViewer x:Name="PageSettings" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+                        <Grid Margin="28,20,28,24">
+                            <StackPanel MaxWidth="560" HorizontalAlignment="Left">
+                                <TextBlock Text="设置" FontSize="22" FontWeight="SemiBold" Foreground="#1D1D1F"/>
+                                <TextBlock Text="路由行为、启动方式与本机路径。修改后立即生效。"
+                                           FontSize="13" Foreground="#6E6E73" Margin="0,6,0,18" TextWrapping="Wrap"/>
+
+                                <Border CornerRadius="16" Background="#FFFFFF" BorderBrush="#E5E5EA" BorderThickness="1"
+                                        Padding="20" Margin="0,0,0,14">
+                                    <StackPanel>
+                                        <TextBlock Text="路由行为" FontSize="16" FontWeight="SemiBold" Foreground="#1D1D1F" Margin="0,0,0,12"/>
+                                        <CheckBox x:Name="OptPlayback" Content="自动切换默认扬声器"
+                                                  Checked="OnOptionChanged" Unchecked="OnOptionChanged"
+                                                  Foreground="#1D1D1F" Margin="0,0,0,8"/>
+                                        <TextBlock Text="窗口在屏幕间移动时，把系统默认播放设备切到对应映射。"
+                                                   FontSize="12" Foreground="#8E8E93" Margin="22,0,0,12" TextWrapping="Wrap"/>
+                                        <CheckBox x:Name="OptMic" Content="自动切换默认麦克风（通信设备）"
+                                                  Checked="OnOptionChanged" Unchecked="OnOptionChanged"
+                                                  Foreground="#1D1D1F" Margin="0,0,0,8"/>
+                                        <TextBlock Text="按前台窗口所在屏切换默认通信麦克风；应用内锁定设备时无效。"
+                                                   FontSize="12" Foreground="#8E8E93" Margin="22,0,0,12" TextWrapping="Wrap"/>
+                                        <CheckBox x:Name="OptDefaultOutput" Content="窗口移动时切换默认输出设备"
+                                                  Checked="OnOptionChanged" Unchecked="OnOptionChanged"
+                                                  Foreground="#1D1D1F" Margin="0,0,0,8"/>
+                                        <TextBlock Text="关闭后仅记录日志，不改系统默认设备。"
+                                                   FontSize="12" Foreground="#8E8E93" Margin="22,0,0,12" TextWrapping="Wrap"/>
+
+                                        <TextBlock Text="轮询间隔" FontSize="13" FontWeight="SemiBold" Foreground="#1D1D1F"
+                                                   Margin="0,4,0,6"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Slider x:Name="PollSlider" Width="240" Minimum="100" Maximum="1000"
+                                                    TickFrequency="50" IsSnapToTickEnabled="True"
+                                                    ValueChanged="OnPollChanged" VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="PollText" Text="250 ms" FontSize="12" Foreground="#6E6E73"
+                                                       Margin="12,0,0,0" VerticalAlignment="Center" Width="60"/>
+                                        </StackPanel>
+                                        <TextBlock Text="检测窗口与音频会话的频率；100ms 更灵敏，1000ms 更省资源。"
+                                                   FontSize="12" Foreground="#8E8E93" Margin="0,8,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border CornerRadius="16" Background="#FFFFFF" BorderBrush="#E5E5EA" BorderThickness="1"
+                                        Padding="20" Margin="0,0,0,14">
+                                    <StackPanel>
+                                        <TextBlock Text="启动" FontSize="16" FontWeight="SemiBold" Foreground="#1D1D1F" Margin="0,0,0,12"/>
+                                        <CheckBox x:Name="OptStartup" Content="开机自动启动（登录后在托盘运行）"
+                                                  Checked="OnStartupChanged" Unchecked="OnStartupChanged"
+                                                  Foreground="#1D1D1F" Margin="0,0,0,4"/>
+                                        <TextBlock x:Name="StartupHint" Text="" FontSize="12" Foreground="#8E8E93"
+                                                   Margin="22,0,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border CornerRadius="16" Background="#FFFFFF" BorderBrush="#E5E5EA" BorderThickness="1"
+                                        Padding="20" Margin="0,0,0,14">
+                                    <StackPanel>
+                                        <TextBlock Text="文件与日志" FontSize="16" FontWeight="SemiBold" Foreground="#1D1D1F" Margin="0,0,0,12"/>
+                                        <TextBlock x:Name="ConfigPathText" Text="" FontSize="12" Foreground="#6E6E73"
+                                                   TextWrapping="Wrap" Margin="0,0,0,4"/>
+                                        <TextBlock x:Name="LogPathText" Text="" FontSize="12" Foreground="#6E6E73"
+                                                   TextWrapping="Wrap" Margin="0,0,0,12"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="打开日志文件" Style="{StaticResource SecondaryButton}" Click="OnOpenLog"/>
+                                            <Button Content="打开配置目录" Style="{StaticResource SecondaryButton}"
+                                                    Click="OnOpenConfig" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <Border CornerRadius="16" Background="#FFFFFF" BorderBrush="#E5E5EA" BorderThickness="1"
+                                        Padding="20">
+                                    <StackPanel>
+                                        <TextBlock Text="关于" FontSize="16" FontWeight="SemiBold" Foreground="#1D1D1F" Margin="0,0,0,8"/>
+                                        <TextBlock Text="Screen Audio Router 0.1.0" FontSize="13" Foreground="#1D1D1F"/>
+                                        <TextBlock Text="按显示器切换默认扬声器 / 麦克风。窗口在屏幕间移动时，音频设备跟随绑定关系切换。"
+                                                   FontSize="12" Foreground="#8E8E93" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
