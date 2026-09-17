@@ -1,0 +1,27 @@
+## Build
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+publish/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.DotSettings.user
+
+## Release packages
+dist/
+installer/Output/
+*.zip
+!docs/**/*.zip
+
+## Logs / local config
+*.log
+AppData/
+
+## OS
+Thumbs.db
+Desktop.ini
+.DS_Store
