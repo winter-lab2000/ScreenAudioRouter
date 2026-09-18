@@ -12,7 +12,7 @@
 
 ## 安装
 
-到 [Releases](https://github.com/yuntianDong/ScreenAudioRouter/releases) 下载最新 zip：
+到 [Releases](https://github.com/winter-lab2000/ScreenAudioRouter/releases) 下载最新 zip：
 
 **便携版**
 
